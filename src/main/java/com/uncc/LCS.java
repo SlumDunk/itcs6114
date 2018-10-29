@@ -91,7 +91,7 @@ public class LCS {
                             for (int j = 0; j < strandList.size() - 1; j += 2) {
                                 finalResult.append(PARTIAL_RESULT_SEPARATOR);
                                 finalResult.append(LINE_SEPARATOR);
-                                resultBuffer = new StringBuilder("");
+                                resultBuffer = resultBuffer.delete(0, resultBuffer.length());
                                 strand1 = strandList.get(j);
                                 strand2 = strandList.get(j + 1);
                                 flags = lcs.findLcsLength(strand1, strand2);

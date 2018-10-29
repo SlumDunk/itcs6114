@@ -8,6 +8,53 @@ import java.util.List;
  * @Author: zerong liu
  * @Date: 2018/8/27 16:37
  * @Description: a class that implement the insertion sort algorithm
+ * <p>
+ * Author:
+ * Zerong Liu
+ * <p>
+ * Description of my program design:
+ * 1. The function of method 'readInputFile(String inputFilePath)' is to read the input File.
+ * 2. The function of method 'splitNumbers(String strNumbers)' is to split a string of numbers and transfer it into an array.
+ * 3. The function of method 'insertSort(List<Integer> numberList)' is to sort an array of integers with algorithm of insertion sort.
+ * 4. The function of method 'transList2Str(List<Integer> numberList)' is to transfer an array of numbers into a string.
+ * 5. The function of method 'writeOutputFile(String outputFilePath, StringBuffer content)' is to ouput the result to a file.
+ * <p>
+ * so the progress is that:
+ * 1. read the input file
+ * 2. loop reading each line of the file until there is no new line
+ * 2.1 transfer string of each line into a sub-list of numbers, and add them to the numberList
+ * 3.sort the numbers in the numberList with algorithm of insertion
+ * 4. write the final result to the ouput file.
+ * <p>
+ * <p>
+ * breakdown of my algorithm:
+ * int len = numberList.size();// the length of array
+ * int tmp;// variable to store the temporary value
+ * int j;
+ * for (int i = 0; i < len; i++) {//loop the whole array of numbers
+ * tmp = numberList.get(i);// assigns the current number to tmp
+ * for (j = i; j > 0 && tmp < numberList.get(j - 1); j--) {// move the number to the back position if it is bigger than tmp
+ * numberList.set(j, numberList.get(j - 1));
+ * }
+ * //move current number to the right place
+ * numberList.set(j, tmp);
+ * }
+ * <p>
+ * <p>
+ * compiler: 1.8.0_111
+ * <p>
+ * platform: MacOS
+ * <p>
+ * summary of key factors:
+ * 1. read file successfully.
+ * 2. the number must be integer
+ * 3. the content of the input file must be correct format
+ * 4. implement the algorithm of insertion sort correctly.
+ * 5. write the ouput file successfully.
+ * <p>
+ * data structure design:
+ * 1. transfer each line of the input file into an list of integer.
+ * 2. transfer the sorted numbers in the list into a String.
  */
 public class Lsort {
 
@@ -94,121 +141,6 @@ public class Lsort {
                     numberList.set(j, numberList.get(j - 1));
                 }
                 numberList.set(j, tmp);
-            }
-        }
-    }
-
-    /**
-     * @Author: zerongliu
-     * @Date: 10/2/18 11:59
-     * @Description:
-     */
-    public static class ITCSUtils {
-        /**
-         * seperator of each number of each line
-         */
-        private static final String SEPERATOR = ";";
-
-
-        /**
-         * read the inputFile from path of the file, if the path is invalid, return null
-         *
-         * @param inputFilePath path of the input file
-         * @return return the input file
-         */
-        public static File readInputFile(String inputFilePath) throws Exception {
-            File inputFile = new File(inputFilePath);
-            if (inputFile.length() != 0) {
-                return inputFile;
-            } else {
-                throw new Exception("the input file does not exist!");
-            }
-        }
-
-
-        /**
-         * split the string composed with numbers and semicolon by semicolon,
-         * and transfer the it into array of numbers
-         *
-         * @param strNumbers a string composed with numbers
-         * @return an array of numbers
-         */
-        public static List<Integer> splitNumbers(String strNumbers) {
-            if (strNumbers == null || strNumbers.length() == 0) {
-                System.out.println("the string of numbers is empty!");
-                return null;
-            } else {
-                String[] arrStr = strNumbers.split(SEPERATOR);
-                List<Integer> subNumberList = new ArrayList<Integer>();
-                for (int i = 0; i < arrStr.length; i++) {
-                    subNumberList.add(Integer.parseInt(arrStr[i].trim()));
-                }
-                return subNumberList;
-            }
-        }
-
-
-        /**
-         * transfer an array of integer to a String
-         *
-         * @param numberList an array of integer
-         */
-        public static String transList2Str(List<Integer> numberList) throws Exception {
-            if (numberList != null && numberList.size() >= 1) {
-                StringBuilder result = new StringBuilder();
-                for (int i = 0; i < numberList.size(); i++) {
-                    result.append(numberList.get(i));
-                    if (i != numberList.size() - 1) {
-                        result.append(SEPERATOR);
-                    }
-                }
-                return result.toString();
-            } else {
-                throw new Exception("the input array could not be empty!");
-            }
-        }
-
-        /**
-         * write the result into the path of the output file
-         *
-         * @param outputFilePath the path of the output file
-         * @param content        the content to output
-         */
-        public static void writeOutputFile(String outputFilePath, StringBuffer content) {
-            FileWriter writer = null;
-            try {
-                File outputFile = new File(outputFilePath);
-                if (outputFile.exists()) {
-                    outputFile.delete();
-                }
-                writer = new FileWriter(outputFilePath);
-                writer.write(content.toString());
-                writer.flush();
-                System.out.println("successful!");
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("write answer to output file error!");
-            } finally {
-                if (writer != null) {
-                    try {
-                        writer.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        System.out.println("close output file stream error!");
-                    }
-                }
-            }
-        }
-
-
-        public static void closeFile(BufferedReader reader) {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.out.println("close input file reader error!");
-                }
             }
         }
     }

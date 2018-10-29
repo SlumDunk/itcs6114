@@ -8,6 +8,75 @@ import java.util.List;
  * @Author: zerongliu
  * @Date: 10/2/18 11:52
  * @Description: implement quick algorithm, sort the numbers of input files and output the answer
+ * <p>
+ * Author:
+ * Zerong Liu
+ * <p>
+ * Description of my program design:
+ * Class ITCSUtils provide several public funtions for the program
+ * 1. The function of method 'readInputFile(String inputFilePath)' is to read the input File.
+ * 2. The function of method 'splitNumbers(String strNumbers)' is to split a string of numbers and transfer it into an array.
+ * 3. The function of method 'transList2Str(List<Integer> numberList)' is to transfer an array of numbers into a string.
+ * 4. The function of method 'writeOutputFile(String outputFilePath, StringBuffer content)' is to ouput the result to a file.
+ * <p>
+ * Class Qsort provide method that implements algorithm of quick sort and the entrance of program
+ * 1. The function of method 'sort(List<Integer> nums, int low, int high)' is to sort numbers with quick sort algorithm.
+ * <p>
+ * so the progress is that:
+ * 1. read the paths of input files
+ * 2. loop reading each file
+ * loop reading each line of the file until there is no new line
+ * transfer string of each line into a sub-list of numbers, and add them to the numberList
+ * sort the numbers in the numberList with algorithm of quick sort
+ * append the sub sorting result to the global sortingResult
+ * append the sub performance result to the global performanceResult
+ * 3. append sortingResult and performanceResult to the finalResult
+ * 4. write the final result to the ouput file.
+ * <p>
+ * <p>
+ * breakdown of my algorithm:
+ * if (low > high) {//if low > high, the list of numbers is in order
+ * return;
+ * }
+ * int pivot = nums.get(low);//set the pivot
+ * int i = low;
+ * int j = high;
+ * while (j > i) {//if j>i, continue the loop
+ * while (j > i && nums.get(j) >= pivot) {// from right to left, find the index of the number that smaller than pivot
+ * j--;
+ * }
+ * while (j > i && nums.get(i) <= pivot) {// from left to right, find the index of the number that bigger than pivot
+ * i++;
+ * }
+ * if (i < j) {//exchange nums[i] and nums[j]
+ * int tmp = nums.get(i);
+ * nums.set(i, nums.get(j));
+ * nums.set(j, tmp);
+ * }
+ * }
+ * //exchange num[i] and num[low], now the numbers in left of nums[i] are smaller than pivot, and the numbers in right of nums[i] are bigger than the pivot
+ * nums.set(low, nums.get(i));
+ * nums.set(i, pivot);
+ * //sort the numbers in the left part of pivot recursively
+ * sort(nums, low, i - 1);
+ * //sort the numbers in the right part of pivot recursively
+ * sort(nums, i + 1, high);
+ * <p>
+ * <p>
+ * compiler: 1.8.0_111
+ * <p>
+ * platform: MacOS
+ * <p>
+ * summary of key factors:
+ * 1. read file successfully.
+ * 2. the number must be integer
+ * 3. the content of the input file must be correct format
+ * 4. implement the algorithm of quick sort correctly.
+ * 5. write the ouput file successfully.
+ * <p>
+ * data structure design:
+ * 1. transfer each line of the input file into an list of integer.
+ * 2. transfer the sorted numbers in the list into a String.
  */
 public class Qsort {
     /**
@@ -19,10 +88,11 @@ public class Qsort {
      * the name of output File
      */
     private static final String OUTPUT_FILE_NAME = "answer.txt";
+    public static final String ROOT_PATH = System.getProperty("user.dir");
+    public static final String outputFilePath = ROOT_PATH + File.separator + OUTPUT_FILE_NAME;
 
     public static void main(String[] args) {
-        String rootPath = System.getProperty("user.dir");
-        String outputFilePath = rootPath + File.separator + OUTPUT_FILE_NAME;
+
         if (args.length == 0) {//path of input file must not be empty
             System.out.println("path of input file must not be empty!");
             return;
@@ -45,14 +115,7 @@ public class Qsort {
             for (int i = 0; i < args.length; i++) {
                 String inputFileName = args[i];
                 File inputFile = null;
-                try {
-                    //read an input file
-                    String inputFilePath = rootPath + File.separator + inputFileName;
-                    inputFile = ITCSUtils.readInputFile(inputFilePath);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("input file does not exist!");
-                }
+                inputFile = ITCSUtils.getFileFromPath(ROOT_PATH, inputFileName);
                 BufferedReader reader = null;
                 try {
                     if (inputFile != null) {
@@ -143,120 +206,5 @@ public class Qsort {
         sort(nums, low, i - 1);
         //sort the numbers in the right part of pivot recursively
         sort(nums, i + 1, high);
-    }
-
-    /**
-     * @Author: zerongliu
-     * @Date: 10/2/18 11:59
-     * @Description:
-     */
-    public static class ITCSUtils {
-        /**
-         * seperator of each number of each line
-         */
-        private static final String SEPERATOR = ";";
-
-
-        /**
-         * read the inputFile from path of the file, if the path is invalid, return null
-         *
-         * @param inputFilePath path of the input file
-         * @return return the input file
-         */
-        public static File readInputFile(String inputFilePath) throws Exception {
-            File inputFile = new File(inputFilePath);
-            if (inputFile.length() != 0) {
-                return inputFile;
-            } else {
-                throw new Exception("the input file does not exist!");
-            }
-        }
-
-
-        /**
-         * split the string composed with numbers and semicolon by semicolon,
-         * and transfer the it into array of numbers
-         *
-         * @param strNumbers a string composed with numbers
-         * @return an array of numbers
-         */
-        public static List<Integer> splitNumbers(String strNumbers) {
-            if (strNumbers == null || strNumbers.length() == 0) {
-                System.out.println("the string of numbers is empty!");
-                return null;
-            } else {
-                String[] arrStr = strNumbers.split(SEPERATOR);
-                List<Integer> subNumberList = new ArrayList<Integer>();
-                for (int i = 0; i < arrStr.length; i++) {
-                    subNumberList.add(Integer.parseInt(arrStr[i].trim()));
-                }
-                return subNumberList;
-            }
-        }
-
-
-        /**
-         * transfer an array of integer to a String
-         *
-         * @param numberList an array of integer
-         */
-        public static String transList2Str(List<Integer> numberList) throws Exception {
-            if (numberList != null && numberList.size() >= 1) {
-                StringBuilder result = new StringBuilder();
-                for (int i = 0; i < numberList.size(); i++) {
-                    result.append(numberList.get(i));
-                    if (i != numberList.size() - 1) {
-                        result.append(SEPERATOR);
-                    }
-                }
-                return result.toString();
-            } else {
-                throw new Exception("the input array could not be empty!");
-            }
-        }
-
-        /**
-         * write the result into the path of the output file
-         *
-         * @param outputFilePath the path of the output file
-         * @param content        the content to output
-         */
-        public static void writeOutputFile(String outputFilePath, StringBuffer content) {
-            FileWriter writer = null;
-            try {
-                File outputFile = new File(outputFilePath);
-                if (outputFile.exists()) {
-                    outputFile.delete();
-                }
-                writer = new FileWriter(outputFilePath);
-                writer.write(content.toString());
-                writer.flush();
-                System.out.println("successful!");
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("write answer to output file error!");
-            } finally {
-                if (writer != null) {
-                    try {
-                        writer.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        System.out.println("close output file stream error!");
-                    }
-                }
-            }
-        }
-
-
-        public static void closeFile(BufferedReader reader) {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.out.println("close input file reader error!");
-                }
-            }
-        }
     }
 }
