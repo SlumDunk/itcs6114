@@ -53,5 +53,5 @@ Temporary Items
 .apdisk
 
 ###IDE template
-.iml
+*.iml
 .idea/*
