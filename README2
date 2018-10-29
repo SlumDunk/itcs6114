@@ -1,0 +1,69 @@
+Author:
+    Zerong Liu
+
+Description of my program design:
+         Class ITCSUtils provide several public funtions for the program
+         1. The function of method 'readInputFile(String inputFilePath)' is to read the input File.
+         2. The function of method 'splitNumbers(String strNumbers)' is to split a string of numbers and transfer it into an array.
+         3. The function of method 'transList2Str(List<Integer> numberList)' is to transfer an array of numbers into a string.
+         4. The function of method 'writeOutputFile(String outputFilePath, StringBuffer content)' is to ouput the result to a file.
+
+         Class Qsort provide method that implements algorithm of quick sort and the entrance of program
+         1. The function of method 'sort(List<Integer> nums, int low, int high)' is to sort numbers with quick sort algorithm.
+
+         so the progress is that:
+            1. read the paths of input files
+            2. loop reading each file
+                loop reading each line of the file until there is no new line
+                     transfer string of each line into a sub-list of numbers, and add them to the numberList
+                sort the numbers in the numberList with algorithm of quick sort
+                append the sub sorting result to the global sortingResult
+                append the sub performance result to the global performanceResult
+            3. append sortingResult and performanceResult to the finalResult
+            4. write the final result to the ouput file.
+
+
+breakdown of my algorithm:
+        if (low > high) {//if low > high, the list of numbers is in order
+            return;
+        }
+        int pivot = nums.get(low);//set the pivot
+        int i = low;
+        int j = high;
+        while (j > i) {//if j>i, continue the loop
+            while (j > i && nums.get(j) >= pivot) {// from right to left, find the index of the number that smaller than pivot
+                j--;
+            }
+            while (j > i && nums.get(i) <= pivot) {// from left to right, find the index of the number that bigger than pivot
+                i++;
+            }
+            if (i < j) {//exchange nums[i] and nums[j]
+                int tmp = nums.get(i);
+                nums.set(i, nums.get(j));
+                nums.set(j, tmp);
+            }
+        }
+        //exchange num[i] and num[low], now the numbers in left of nums[i] are smaller than pivot, and the numbers in right of nums[i] are bigger than the pivot
+        nums.set(low, nums.get(i));
+        nums.set(i, pivot);
+        //sort the numbers in the left part of pivot recursively
+        sort(nums, low, i - 1);
+        //sort the numbers in the right part of pivot recursively
+        sort(nums, i + 1, high);
+
+
+compiler: 1.8.0_111
+
+platform: MacOS
+
+summary of key factors:
+    1. read file successfully.
+    2. the number must be integer
+    3. the content of the input file must be correct format
+    4. implement the algorithm of quick sort correctly.
+    5. write the ouput file successfully.
+
+data structure design:
+    1. transfer each line of the input file into an list of integer.
+    2. transfer the sorted numbers in the list into a String.
+

@@ -1,0 +1,47 @@
+Author:
+    Zerong Liu
+
+Description of my program design:
+         1. The function of method 'readInputFile(String inputFilePath)' is to read the input File.
+         2. The function of method 'splitNumbers(String strNumbers)' is to split a string of numbers and transfer it into an array.
+         3. The function of method 'insertSort(List<Integer> numberList)' is to sort an array of integers with algorithm of insertion sort.
+         4. The function of method 'transList2Str(List<Integer> numberList)' is to transfer an array of numbers into a string.
+         5. The function of method 'writeOutputFile(String outputFilePath, StringBuffer content)' is to ouput the result to a file.
+
+         so the progress is that:
+            1. read the input file
+            2. loop reading each line of the file until there is no new line
+                2.1 transfer string of each line into a sub-list of numbers, and add them to the numberList
+            3.sort the numbers in the numberList with algorithm of insertion
+            4. write the final result to the ouput file.
+
+
+breakdown of my algorithm:
+         int len = numberList.size();// the length of array
+         int tmp;// variable to store the temporary value
+         int j;
+         for (int i = 0; i < len; i++) {//loop the whole array of numbers
+             tmp = numberList.get(i);// assigns the current number to tmp
+             for (j = i; j > 0 && tmp < numberList.get(j - 1); j--) {// move the number to the back position if it is bigger than tmp
+                    numberList.set(j, numberList.get(j - 1));
+             }
+             //move current number to the right place
+             numberList.set(j, tmp);
+         }
+
+
+compiler: 1.8.0_111
+
+platform: MacOS
+
+summary of key factors:
+    1. read file successfully.
+    2. the number must be integer
+    3. the content of the input file must be correct format
+    4. implement the algorithm of insertion sort correctly.
+    5. write the ouput file successfully.
+
+data structure design:
+    1. transfer each line of the input file into an list of integer.
+    2. transfer the sorted numbers in the list into a String.
+
