@@ -7,15 +7,37 @@ import java.util.List;
 
 /**
  * @Author: zerongliu
- * @Date: 10/28/18 12:50
+ * @Author: Shane Polefko
+ * @Author: Zhang Zhang
+ * @Date: 10/30/18 12:50
  * @Description:
+ *      Description of Program: The program is designed to take a given input file that has DNA strands, 
+ * read the strands in, find the longest common subsequence between every two pairs, and print the 
+ * results and performance out into a new file "answer.txt". 
+ * 		Key Functions: The reads in a file of DNA strands first. The file must not be empty, and it must
+ * have at least 2 DNA strands in it. The DNA strands must be separated by new lines, and they must be 
+ * input in pairs (i.e. DNA strands 1 and 2 will be compared, strands 3 and 4 will be compared, etc). If any 
+ * strand is at the end without a paired strand, it will be dropped.
+ * 			After they are read in, the program will find the longest common subsequence using the algorithm
+ * described within Introduction to Algorithms 3rd Edition. It uses two 2d arrays; one that stores the counts
+ * for calculating the LCS, and one that as a pointer to rebuild the optimal subsequence. 
+ * 			Once the LCS is calculated for each pair of strands that was read in, the program will write out
+ * a new file that contains the DNA strand pairs, the LCS for the pairs, and the performance metrics.
+ * 		Compiler used: Eclipse
+ * 		Platform: Windows 10
+ * 		What works: For our scope, the program efficiently sorts through DNA strands given to produce correct
+ * output of the LCS. We designed the program with good practices in mind, managed common exceptions that 
+ * could occur, and utilized variable naming in a way that easily tells a reader what the program is doing.
+ * 		What fails: We could potentially make the program more efficient. For example, in printing the lcs, 
+ * we could have removed the flags array and created logic to instead manage the printing based on the values
+ * within the c table. This would provide us with more efficient use of memory if the program was ever used 
+ * for much longer DNA strands.
+ * 		Data Structure Description: Our program mostly utilized lists and 2d arrays. Lists were used because
+ * our program needed sequentially access and ordered sets of strings. 2d arrays were used as a table or 
+ * matrix to store the results for the LCS as if strand1 was the row header and strand 2 was the column 
+ * header. 
  */
 public class LCS {
-    /**
-     * seperator of each number of each line
-     */
-    private static final String SEPERATOR = ";";
-
     /**
      * the name of output File
      */
@@ -64,8 +86,6 @@ public class LCS {
             }
             //a stringbuffer that store the final output result
             StringBuffer finalResult = new StringBuffer();
-            //a stringbutffer that store the performance result
-            StringBuffer performanceResult = new StringBuffer();
             long startTime = System.currentTimeMillis();
             //loop read the input file
             for (int i = 0; i < args.length; i++) {
@@ -76,15 +96,20 @@ public class LCS {
                 try {
                     if (inputFile != null) {
                         reader = new BufferedReader(new FileReader(inputFile));
-                        int[] tmpOriginArray;
                         List<String> strandList = new ArrayList<String>();
                         String tmpString;
+                        StringBuilder resultBuffer = new StringBuilder();
+
                         try {
                             // read all lines inside an input file and store them into a list
                             while ((tmpString = reader.readLine()) != null && tmpString.trim().length() > 0) {
                                 strandList.add(tmpString);
                             }
-                            StringBuilder resultBuffer = null;
+                            if (strandList.size() < 2) {
+                            		System.out.println("Not enough strands in file to provide a comparison.");
+                            		System.out.println("Please restart program with a file with at least 2 strands");
+                                    return;
+                            }
                             String strand1 = null;
                             String strand2 = null;
                             int[][] flags = null;
@@ -126,11 +151,14 @@ public class LCS {
     }
 
     /**
-     * use dynamic programming idea to find the longest common subsequence of two strands
+     * use dynamic programming idea to find the longest common subsequence of two strands. 
+     * flags are used as a pointer to the optimal solution found within the c table. If flags
+     * is looked as a 2d table, 1 is an arrow pointing northwest, 2 is an arrow pointing north,
+     * and 3 is an arrow pointing west. 
      *
      * @param strand1 the first strand
      * @param strand2 the second strand
-     * @return
+     * @return      the 2d int array that points to the optimal solution of LCS
      */
     public int[][] findLcsLength(String strand1, String strand2) {
         int m = strand1.length();
@@ -166,7 +194,7 @@ public class LCS {
      * @param strand       original string
      * @param m            length of first strand
      * @param n            length of second strand
-     * @param resultBuffer result buffer
+     * @param resultBuffer holds the found optimal LCS
      */
     public void getLcs(int[][] flags, String strand, int m, int n, StringBuilder resultBuffer) {
         if (m == 0 || n == 0)
