@@ -64,7 +64,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        com.uncc.Qsort
+                                        com.uncc.GraphConsole
                                     </mainClass>
                                 </manifest>
                             </archive>

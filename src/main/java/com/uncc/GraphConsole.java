@@ -14,8 +14,31 @@ import java.util.function.Consumer;
 
 /**
  * @Author: zerongliu
+ * @Author: Shane Polefko
+ * @Author: Zhang Zhang
  * @Date: 11/29/18 19:04
- * @Description: the main class for project 4.
+ * @Description: Description of Program:
+ * The program is designed to take a given input .gml file that has the information
+ * about a graph. The program read and parse the file into a graph. And provide a method that implements two
+ * algorithms--dijkstra and bellmanford to find the shortest route from one vertex to another.
+ * <p>
+ * Key Functions:
+ * generate gaph according to the input file.
+ * print the graph.
+ * run two algorithms according to the input command.
+ * print the performance of an algorithm.
+ * <p>
+ * Compiler used: Eclipse, IntelliJ
+ * Platform: Windows 10, Mac
+ * Compiler: JDK 1.8
+ * What works: For our scope, the program use knowledge about design patterns to generate Vertex and edge.
+ * We designed the program with good practices in mind, managed common exceptions that could occur, and
+ * utilized variable naming in a way that easily tells a reader what the program is doing.
+ * <p>
+ * What fails:
+ * Data Structure Description: Our program mostly utilized hashSet and Map. HashSet is used to store the
+ * Vertex of the graph. LinkedHashMap is used to store the incoming edge and outgoing edge related to a
+ * vertex. And we also use map to store the information of all the edges.
  */
 public class GraphConsole {
     /**
@@ -52,6 +75,11 @@ public class GraphConsole {
      */
     public static final String PERFORMANCE = "performance";
 
+    public static Boolean flag = Boolean.FALSE;
+
+    /**
+     * define the graph
+     */
     private static Graph<String, DefaultWeightedEdge> graph = new DirectedWeightedPseudograph<>(DefaultWeightedEdge.class);
 
     private static long performanceTime;
@@ -68,26 +96,27 @@ public class GraphConsole {
                         generateGraph();
                         break;
                     case PRINT:
-                        printGraph();
+                        if (graph.vertexSet().isEmpty()) {
+                            System.out.println("please generate the graph first");
+                        } else {
+                            printGraph();
+                        }
                         break;
                     case DIJKSTRA_ALGORITHM:
-                        System.out.println("please input the source vertex:");
-                        source = inputCmd.nextLine();
-                        System.out.println("please input the target vertex:");
-                        target = inputCmd.nextLine();
-                        findShortestPath(DIJKSTRA_ALGORITHM, source, target);
+                        executeAlgorithm(inputCmd, DIJKSTRA_ALGORITHM);
                         break;
                     case BELLMANFORD_ALGORITHM:
-                        System.out.println("please input the source vertex:");
-                        source = inputCmd.nextLine();
-                        System.out.println("please input the target vertex:");
-                        target = inputCmd.nextLine();
-                        findShortestPath(BELLMANFORD_ALGORITHM, source, target);
+                        executeAlgorithm(inputCmd, BELLMANFORD_ALGORITHM);
                         break;
                     case PERFORMANCE:
-                        printPerformance();
+                        if (graph.vertexSet().isEmpty()) {
+                            System.out.println("please generate the graph first");
+                        } else {
+                            printPerformance();
+                        }
                         break;
                     default:
+                        System.out.println("the input command should be one the commands: graph, print, performance, quit, dijkstra, bellmanford");
                         break;
                 }
             }
@@ -97,10 +126,33 @@ public class GraphConsole {
     }
 
     /**
+     * execute the specific algorithm
+     *
+     * @param inputCmd
+     */
+    private static void executeAlgorithm(Scanner inputCmd, String algorithm) {
+        String source;
+        String target;
+        if (graph.vertexSet().isEmpty()) {
+            System.out.println("please generate the graph first");
+        } else {
+            System.out.println("please input the source vertex:");
+            source = inputCmd.nextLine();
+            System.out.println("please input the target vertex:");
+            target = inputCmd.nextLine();
+            findShortestPath(algorithm, source, target);
+        }
+    }
+
+    /**
      * print the performance time
      */
     private static void printPerformance() {
-        System.out.println("the performance of the algorithm is " + performanceTime);
+        if (Boolean.FALSE == flag) {
+            System.out.println("please execute the graph algorithm first");
+        } else {
+            System.out.println("the performance of the algorithm is " + performanceTime + " ms");
+        }
     }
 
     /**
@@ -125,6 +177,7 @@ public class GraphConsole {
         }
         long end = System.currentTimeMillis();
         performanceTime = end - start;
+        flag = Boolean.TRUE;
     }
 
     /**
@@ -180,6 +233,7 @@ public class GraphConsole {
      */
     private static void generateGraph() {
         File gmlFile = ITCSUtils.getFileFromPath(ROOT_PATH, GML_FILE_NAME);
+        //define vertexProvider, equal to the vertex class
         VertexProvider<String> vertexProvider = new VertexProvider<String>() {
             @Override
             public String buildVertex(String id, Map<String, Attribute> map) {
@@ -187,6 +241,7 @@ public class GraphConsole {
             }
         };
 
+        //define edgepProvider, equal to the edge class
         EdgeProvider<String, DefaultWeightedEdge> edgeProvider = new EdgeProvider<String, DefaultWeightedEdge>() {
             @Override
             public DefaultWeightedEdge buildEdge(String source, String target, String label, Map<String, Attribute> attributeMap) {
