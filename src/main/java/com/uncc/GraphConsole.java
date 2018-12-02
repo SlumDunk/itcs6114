@@ -39,6 +39,7 @@ import java.util.function.Consumer;
  * Data Structure Description: Our program mostly utilized hashSet and Map. HashSet is used to store the
  * Vertex of the graph. LinkedHashMap is used to store the incoming edge and outgoing edge related to a
  * vertex. And we also use map to store the information of all the edges.
+ * note:in the path of the executable jar package, type the command "java -jar graph.jar" to run the program
  */
 public class GraphConsole {
     /**
