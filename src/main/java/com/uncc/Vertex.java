@@ -3,7 +3,8 @@ package com.uncc;
 /**
  * @Author: zerongliu
  * @Date: 12/4/18 19:37
- * @Description: the vertex class
+ * @Description: Class used to represent a vertex in our graph. It maintains the basic information and function of the vertex, 
+ * such as it's ID value and checking if vertices are equivalent.
  */
 public class Vertex {
     private String value;
