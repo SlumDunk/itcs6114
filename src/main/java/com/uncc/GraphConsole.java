@@ -31,14 +31,15 @@ import java.util.function.Consumer;
  * Compiler used: Eclipse, IntelliJ
  * Platform: Windows 10, Mac
  * Compiler: JDK 1.8
- * What works: For our scope, the program use knowledge about design patterns to generate Vertex and edge.
+ * What works: For our scope, the program defines three main class, the Graph class, Edge class, and the Vertex class
  * We designed the program with good practices in mind, managed common exceptions that could occur, and
  * utilized variable naming in a way that easily tells a reader what the program is doing.
  * <p>
  * What fails:
  * Data Structure Description: Our program mostly utilized hashSet and Map. HashSet is used to store the
- * Vertex of the graph. LinkedHashMap is used to store the incoming edge and outgoing edge related to a
- * vertex. And we also use map to store the information of all the edges.
+ * Vertex of the graph. HashMap is used to store the outgoing edge related to a
+ * vertex. And we also use map to store distance from the original vertex to the target vertex, store the relationship
+ * between the vertex and its previous vertex
  * note:in the path of the executable jar package, type the command "java -jar graph.jar" to run the program
  */
 public class GraphConsole {
@@ -82,6 +83,11 @@ public class GraphConsole {
      * define the graph
      */
     private static Graph<String, DefaultWeightedEdge> graph = new DirectedWeightedPseudograph<>(DefaultWeightedEdge.class);
+
+    /**
+     * define my custom Graph
+     */
+    private static com.uncc.Graph customGraph;
 
     private static long performanceTime;
 
@@ -139,9 +145,7 @@ public class GraphConsole {
         } else {
             System.out.println("please input the source vertex:");
             source = inputCmd.nextLine();
-            System.out.println("please input the target vertex:");
-            target = inputCmd.nextLine();
-            findShortestPath(algorithm, source, target);
+            findShortestPath(algorithm, source);
         }
     }
 
@@ -157,24 +161,31 @@ public class GraphConsole {
     }
 
     /**
-     * find the shortest path from source vertex to target vertex with specific algorithm
+     * find the shortest path from source vertex to other vertexes with specific algorithm
      *
      * @param algorithm
      * @param source
-     * @param target
      */
-    private static void findShortestPath(String algorithm, String source, String target) {
+    private static void findShortestPath(String algorithm, String source) {
         long start = System.currentTimeMillis();
         if (DIJKSTRA_ALGORITHM.equals(algorithm)) {
             //find the shortest Path using dijkstra algorithm
-            DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraAlg = new DijkstraShortestPath<String, DefaultWeightedEdge>(graph);
-            ShortestPathAlgorithm.SingleSourcePaths singlePath = dijkstraAlg.getPaths(source);
-            System.out.println("the path from " + source + " to " + target + singlePath.getPath(target));
+            //DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraAlg = new DijkstraShortestPath<String, DefaultWeightedEdge>(graph);
+            //ShortestPathAlgorithm.SingleSourcePaths singlePath = dijkstraAlg.getPaths(source);
+            //System.out.println("the path from " + source + " to " + target + singlePath.getPath(target));
+            customGraph.dijkstra(customGraph.getVertexMap().get(source));
+            customGraph.showResult();
         } else if (BELLMANFORD_ALGORITHM.equals(algorithm)) {
             //find the shortest Path using bellmanFord algorithm
-            BellmanFordShortestPath<String, DefaultWeightedEdge> bellmanFordAlg = new BellmanFordShortestPath<String, DefaultWeightedEdge>(graph);
-            ShortestPathAlgorithm.SingleSourcePaths anotherSinglePath = bellmanFordAlg.getPaths(source);
-            System.out.println("the path from " + source + " to " + target + anotherSinglePath.getPath(target));
+            //BellmanFordShortestPath<String, DefaultWeightedEdge> bellmanFordAlg = new BellmanFordShortestPath<String, DefaultWeightedEdge>(graph);
+            //ShortestPathAlgorithm.SingleSourcePaths anotherSinglePath = bellmanFordAlg.getPaths(source);
+            //System.out.println("the path from " + source + " to " + target + anotherSinglePath.getPath(target));
+            Boolean success = customGraph.bellmanFord(customGraph.getVertexMap().get(source));
+            if (success) {
+                customGraph.showResult();
+            } else {
+                System.out.println("there is an negative circle");
+            }
         }
         long end = System.currentTimeMillis();
         performanceTime = end - start;
@@ -253,6 +264,16 @@ public class GraphConsole {
         try {
             importer.importGraph(graph, gmlFile);
             System.out.println("generate graph successful!");
+            Set<Vertex> vertexSet = new HashSet<Vertex>();
+            for (String vertex : graph.vertexSet()) {
+                vertexSet.add(new Vertex(vertex));
+            }
+            customGraph = new com.uncc.Graph(vertexSet);
+            Set<DefaultWeightedEdge> edges = graph.edgeSet();
+            for (DefaultWeightedEdge edge : edges
+                    ) {
+                customGraph.addEdge(new Edge(customGraph.getVertexMap().get(graph.getEdgeSource(edge)), customGraph.getVertexMap().get(graph.getEdgeTarget(edge)), graph.getEdgeWeight(edge)));
+            }
         } catch (ImportException e) {
             e.printStackTrace();
             System.out.println("read gml file error!");
