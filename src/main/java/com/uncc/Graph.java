@@ -7,7 +7,8 @@ import java.util.function.Consumer;
 /**
  * @Author: zerongliu
  * @Date: 11/29/18 19:04
- * @Description: Graph class
+ * @Description: This class is used to represent the overall graph for our program. It stores the sets of information pertaining to
+ * our vertices, edges, weights, distances, paths, etc, and it manages the algorithms functions and use.
  */
 public class Graph {
     /**

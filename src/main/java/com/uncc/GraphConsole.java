@@ -35,7 +35,10 @@ import java.util.function.Consumer;
  * We designed the program with good practices in mind, managed common exceptions that could occur, and
  * utilized variable naming in a way that easily tells a reader what the program is doing.
  * <p>
- * What fails:
+ * What fails: We believe that our program completes the task correctly and efficiently. Therefore, the only main things 
+ * we believe that we could work on are attempts to improve efficiency, user friendliness, and making it more reusable, but 
+ * this would leave the scope of the project.
+ * <p>
  * Data Structure Description: Our program mostly utilized hashSet and Map. HashSet is used to store the
  * Vertex of the graph. HashMap is used to store the outgoing edge related to a
  * vertex. And we also use map to store distance from the original vertex to the target vertex, store the relationship

@@ -3,7 +3,8 @@ package com.uncc;
 /**
  * @Author: zerongliu
  * @Date: 12/4/18 14:55
- * @Description:
+ * @Description: This class is used to represent Edges within our graphs. It maintains the same basic functions/attributes as 
+ * describe in the book (i.e. source, target, and weight).
  */
 public class Edge {
     private Vertex sourceVertex;
